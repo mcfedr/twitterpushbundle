@@ -1,0 +1,21 @@
+{
+    "name": "mcfedr/twitterpushbundle",
+    "description": "A bundle for pushing tweets are push notifications",
+    "require": {
+        "php": ">=5.4.0",
+        "mcfedr/awspushbundle": "2.1.3",
+        "symfony/symfony": "~2.3",
+        "guzzle/guzzle": "~3.7"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fred Cox",
+            "email": "mcfedr@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-0": { "mcfedr\\AWSPushBundle": "src/" }
+    }
+}
