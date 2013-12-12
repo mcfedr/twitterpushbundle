@@ -25,7 +25,7 @@ You need to also load the AWSPushBundle
 Setup the controllers in your routing.yml
 
     mcfedr_twitter_push:
-        resource: "@mcfedrHromPushBundle/Controller/"
+        resource: "@mcfedrTwitterPushBundle/Controller/"
         type:     annotation
         prefix:   /
 
