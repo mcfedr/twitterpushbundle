@@ -42,7 +42,8 @@ This is sample configuration, to add to your config.yml
             token_secret: 'my token secret'
         userid: "twitter id that you want to follow"
 
-You can find user id at [idfromuser.com](http://idfromuser.com)
+You can find userid at [idfromuser.com](http://idfromuser.com). You can also use a comma separated list if you want to
+follow multiple users
 
 You will also need to configure the AWSPushBundle, see the
 [readme](https://github.com/mcfedr/awspushbundle/blob/master/README.md) for details
