@@ -3,7 +3,7 @@
     "description": "A bundle for pushing tweets are push notifications",
     "require": {
         "php": ">=5.4.0",
-        "mcfedr/awspushbundle": "2.1.3",
+        "mcfedr/awspushbundle": "~2.1.5",
         "symfony/symfony": "~2.3",
         "guzzle/guzzle": "~3.7"
     },
