@@ -69,12 +69,12 @@ class TwitterStreamCommand extends Command {
                 try {
                     $this->pusher->pushTweet($data);
                     $this->logger->info('Sent tweet', [
-                        'TweetId' => $data['id']
+                        'TweetId' => $data['id_str']
                     ]);
                 }
                 catch(\Exception $e) {
                     $this->logger->error("Failed to push", [
-                        'TweetId' => $data['id'],
+                        'TweetId' => $data['id_str'],
                         'Exception' => $e
                     ]);
                 }
