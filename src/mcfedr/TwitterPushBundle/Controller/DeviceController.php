@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class DeviceController extends Controller {
     /**
@@ -44,6 +46,20 @@ class DeviceController extends Controller {
         }
 
         return new Response('Unknown error', 500);
+    }
+
+    /**
+     * Decode a json response
+     *
+     * @param Request $request
+     * @return mixed|Response
+     */
+    private function handleJSONRequest(Request $request) {
+        $data = json_decode($request->getContent(), true);
+        if($data === null) {
+            return new Response("Invalid Request JSON", 400);
+        }
+        return $data;
     }
 
     /**
