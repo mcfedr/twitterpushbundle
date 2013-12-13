@@ -21,6 +21,9 @@ class DeviceController extends Controller {
         }
 
         if(!isset($data['deviceID']) || !isset($data['platform'])) {
+            $this->get('logger')->error('Missing parameters', [
+                'data' => $data
+            ]);
             return new Response('Missing parameters', 400);
         }
 
@@ -35,6 +38,10 @@ class DeviceController extends Controller {
             }
         }
         catch(PlatformNotConfiguredException $e) {
+            $this->get('logger')->error('Unknown platform', [
+                'e' => $e,
+                'platform' => $data['platform']
+            ]);
             return new Response('Unknown platform', 400);
         }
         catch(\Exception $e) {
@@ -55,8 +62,12 @@ class DeviceController extends Controller {
      * @return mixed|Response
      */
     private function handleJSONRequest(Request $request) {
-        $data = json_decode($request->getContent(), true);
+        $content = $request->getContent();
+        $data = json_decode($content, true);
         if($data === null) {
+            $this->get('logger')->error('Invalid JSON', [
+                'content' => $content
+            ]);
             return new Response("Invalid Request JSON", 400);
         }
         return $data;
