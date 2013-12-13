@@ -66,17 +66,24 @@ class TwitterStreamCommand extends Command {
             }
             $data = json_decode($line, true);
             if(isset($data['text'])) {
-                try {
-                    $this->pusher->pushTweet($data);
-                    $this->logger->info('Sent tweet', [
-                        'TweetId' => $data['id_str']
-                    ]);
+                $this->logger->debug('Received Tweet', ['tweet' => $data]);
+                //Filter replies and retweets
+                if($data['user']['id_str'] == $this->userid) {
+                    try {
+                        $this->pusher->pushTweet($data);
+                        $this->logger->info('Sent tweet', [
+                            'TweetId' => $data['id_str']
+                        ]);
+                    }
+                    catch(\Exception $e) {
+                        $this->logger->error("Failed to push", [
+                            'TweetId' => $data['id_str'],
+                            'Exception' => $e
+                        ]);
+                    }
                 }
-                catch(\Exception $e) {
-                    $this->logger->error("Failed to push", [
-                        'TweetId' => $data['id_str'],
-                        'Exception' => $e
-                    ]);
+                else {
+                    $this->logger->info('Ignored Tweet', ['TweetId' => $data['id_str']]);
                 }
             }
             else {
