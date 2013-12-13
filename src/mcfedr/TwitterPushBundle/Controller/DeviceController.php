@@ -23,12 +23,24 @@ class DeviceController extends Controller {
         }
 
         try {
-            if($this->getPushDevices()->registerDevice($data['deviceID'], $data['platform'])) {
+            if(($arn = $this->getPushDevices()->registerDevice($data['deviceID'], $data['platform']))) {
+                $this->get('logger')->info('Device registered', [
+                    'arn' => $arn,
+                    'device' => $data['deviceID'],
+                    'platform' => $data['platform']
+                ]);
                 return new Response('Device registered', 200);
             }
         }
         catch(PlatformNotConfiguredException $e) {
             return new Response('Unknown platform', 400);
+        }
+        catch(\Exception $e) {
+            $this->get('logger')->error('Exception registering device', [
+                'e' => $e,
+                'device' => $data['deviceID'],
+                'platform' => $data['platform']
+            ]);
         }
 
         return new Response('Unknown error', 500);
