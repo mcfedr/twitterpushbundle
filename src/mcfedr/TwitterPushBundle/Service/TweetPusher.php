@@ -4,7 +4,8 @@ namespace mcfedr\TwitterPushBundle\Service;
 use mcfedr\AWSPushBundle\Message\Message;
 use mcfedr\AWSPushBundle\Service\Messages;
 
-class TweetPusher {
+class TweetPusher
+{
 
     /**
      * @var Messages
@@ -14,7 +15,8 @@ class TweetPusher {
     /**
      * @param Messages $messages
      */
-    public function __construct(Messages $messages) {
+    public function __construct(Messages $messages)
+    {
         $this->messages = $messages;
     }
 
@@ -23,7 +25,8 @@ class TweetPusher {
      *
      * @param array $tweet
      */
-    public function pushTweet($tweet) {
+    public function pushTweet($tweet)
+    {
         $m = new Message($tweet['text']);
         $this->messages->broadcast($m);
     }
