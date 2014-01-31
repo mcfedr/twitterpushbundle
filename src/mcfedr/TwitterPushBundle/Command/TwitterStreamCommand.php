@@ -31,7 +31,13 @@ class TwitterStreamCommand extends Command {
      */
     private $logger;
 
-    public function __construct($client, $pusher, $userid, $logger) {
+    /**
+     * @param Client $client
+     * @param TweetPusher $pusher
+     * @param string $userid
+     * @param LoggerInterface $logger
+     */
+    public function __construct(Client $client, TweetPusher $pusher, $userid, LoggerInterface $logger) {
         parent::__construct();
 
         $this->client = $client;

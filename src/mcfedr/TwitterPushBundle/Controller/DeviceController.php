@@ -13,6 +13,9 @@ class DeviceController extends Controller {
     /**
      * @Route("/devices")
      * @Method({"POST"})
+     *
+     * @param Request $request
+     * @return Response
      */
     public function registerDeviceAction(Request $request) {
         $data = $this->handleJSONRequest($request);
