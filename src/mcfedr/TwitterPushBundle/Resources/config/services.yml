@@ -7,13 +7,14 @@ parameters:
 
 services:
     mcfedr_twitter_push.twitter_stream_client:
-            class: Guzzle\Http\Client
-            arguments:
-              - "https://stream.twitter.com/{version}"
-              -
-                version: "1.1"
-            calls:
-              - [addSubscriber, ["@mcfedr_twitter_push.twitter_oauth"]]
+        class: Guzzle\Http\Client
+        arguments:
+          - "https://stream.twitter.com/{version}"
+          -
+            version: "1.1"
+        calls:
+          - [addSubscriber, ["@mcfedr_twitter_push.twitter_oauth"]]
+          - [addSubscriber, ["@mcfedr_twitter_push.twitter_stream_log_plugin"]]
 
     mcfedr_twitter_push.twitter_oauth:
         class: Guzzle\Plugin\Oauth\OauthPlugin
@@ -25,16 +26,24 @@ services:
             token_secret: "%mcfedr_twitter_push.twitter.token_secret%"
 
     mcfedr_twitter_push.command.stream:
-                class: mcfedr\TwitterPushBundle\Command\TwitterStreamCommand
-                arguments:
-                  - "@mcfedr_twitter_push.twitter_stream_client"
-                  - "@mcfedr_twitter_push.pusher"
-                  - "%mcfedr_twitter_push.userid%"
-                  - "@logger"
-                tags:
-                    -  { name: console.command }
+        class: mcfedr\TwitterPushBundle\Command\TwitterStreamCommand
+        arguments:
+          - "@mcfedr_twitter_push.twitter_stream_client"
+          - "@mcfedr_twitter_push.pusher"
+          - "%mcfedr_twitter_push.userid%"
+          - "@logger"
+        tags:
+            -  { name: console.command }
 
     mcfedr_twitter_push.pusher:
-                    class: mcfedr\TwitterPushBundle\Service\TweetPusher
-                    arguments:
-                      - "@mcfedr_aws_push.messages"
+        class: mcfedr\TwitterPushBundle\Service\TweetPusher
+        arguments:
+          - "@mcfedr_aws_push.messages"
+
+    mcfedr_twitter_push.twitter_stream_log_adapter:
+        class: Guzzle\Log\PsrLogAdapter
+        arguments: ["@logger"]
+
+    mcfedr_twitter_push.twitter_stream_log_plugin:
+        class: Guzzle\Plugin\Log\LogPlugin
+        arguments: ["@mcfedr_twitter_push.twitter_stream_log_adapter", ">>>>>>>>\n{request}\n<<<<<<<<\n{response}\n--------\n{curl_stderr}"]
