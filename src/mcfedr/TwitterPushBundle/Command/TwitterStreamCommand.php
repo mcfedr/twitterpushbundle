@@ -62,9 +62,9 @@ class TwitterStreamCommand extends Command
         $request = $this->client->post(
             'statuses/filter.json',
             null,
-            array(
+            [
                 'follow' => $this->userid
-            )
+            ]
         );
 
         $factory = new PhpStreamRequestFactory();
