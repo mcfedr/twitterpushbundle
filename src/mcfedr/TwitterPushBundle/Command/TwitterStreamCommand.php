@@ -57,7 +57,7 @@ class TwitterStreamCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->logger->info('Opening twitter stream');
+        $this->logger->info("Opening twitter stream to follow user {$this->userid}");
 
         $request = $this->client->post(
             'statuses/filter.json',
@@ -75,6 +75,7 @@ class TwitterStreamCommand extends Command
             // Read a line from the stream
             $line = $stream->readLine();
             if (trim($line) == '') {
+                $this->logger->debug('Keep alive', ['line' => $line]);
                 continue;
             }
             $data = json_decode($line, true);
