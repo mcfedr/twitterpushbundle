@@ -72,20 +72,37 @@ class TwitterStreamCommand extends Command
 
         // Read until the stream is closed
         while (!$stream->feof()) {
+            $this->logger->debug('Loop start');
+
             // Read a line from the stream
-            $line = $stream->readLine();
+            // Normal read line seems to leave me waiting quite a bit
+            //$line = $stream->readLine();
+
+            // Whereas this seems to work just fine
+            $line = '';
+            $fp = $stream->getStream();
+            while (false !== ($char = fgetc($fp))) {
+//                $this->logger->debug('Got a char', ['char' => $char]);
+                $line .= $char;
+                if ($char == "\n") {
+                    break;
+                }
+            }
+
+            $this->logger->debug('Got a line', ['line' => $line]);
+
             if (trim($line) == '') {
-                $this->logger->debug('Keep alive', ['line' => $line]);
+                $this->logger->debug('Keep alive');
                 continue;
             }
             $data = json_decode($line, true);
             if (isset($data['text'])) {
-                $this->logger->debug('Received Tweet', ['tweet' => $data]);
+                $this->logger->info('Received Tweet', ['tweet' => $data]);
                 //Filter replies and retweets
                 if ($data['user']['id_str'] == $this->userid) {
                     try {
                         $this->pusher->pushTweet($data);
-                        $this->logger->info(
+                        $this->logger->notice(
                             'Sent tweet',
                             [
                                 'TweetId' => $data['id_str']
