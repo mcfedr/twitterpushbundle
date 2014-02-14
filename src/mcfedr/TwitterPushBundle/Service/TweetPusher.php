@@ -3,6 +3,7 @@ namespace mcfedr\TwitterPushBundle\Service;
 
 use mcfedr\AWSPushBundle\Message\Message;
 use mcfedr\AWSPushBundle\Service\Messages;
+use mcfedr\AWSPushBundle\Service\Topics;
 
 class TweetPusher
 {
@@ -13,11 +14,25 @@ class TweetPusher
     private $messages;
 
     /**
-     * @param Messages $messages
+     * @var Topics
      */
-    public function __construct(Messages $messages)
+    private $topics;
+
+    /**
+     * @var string
+     */
+    private $topicName;
+
+    /**
+     * @param Messages $messages
+     * @param Topics $topics
+     * @param string $topicName
+     */
+    public function __construct(Messages $messages, Topics $topics, $topicName)
     {
         $this->messages = $messages;
+        $this->topics = $topics;
+        $this->topicName = $topicName;
     }
 
     /**
@@ -28,6 +43,11 @@ class TweetPusher
     public function pushTweet($tweet)
     {
         $m = new Message($tweet['text']);
-        $this->messages->broadcast($m);
+        if ($this->topicName) {
+            $this->topics->broadcast($m, $this->topicName);
+        }
+        else {
+            $this->messages->broadcast($m);
+        }
     }
 }

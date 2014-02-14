@@ -39,6 +39,8 @@ services:
         class: mcfedr\TwitterPushBundle\Service\TweetPusher
         arguments:
           - "@mcfedr_aws_push.messages"
+          - "@mcfedr_aws_push.topics"
+          - "%mcfedr_aws_push.topic_name%"
 
     mcfedr_twitter_push.twitter_stream_log_adapter:
         class: Guzzle\Log\PsrLogAdapter
