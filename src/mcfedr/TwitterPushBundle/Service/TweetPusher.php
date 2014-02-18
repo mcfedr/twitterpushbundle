@@ -43,6 +43,16 @@ class TweetPusher
     public function pushTweet($tweet)
     {
         $m = new Message($tweet['text']);
+        if (isset($tweet['entities']) && isset($tweet['entities']['urls']) && isset($tweet['entities']['urls'][0])) {
+            $m->setCustom([
+                'url' => $tweet['entities']['urls'][0]['url']
+            ]);
+        } else if (isset($tweet['entities']) && isset($tweet['entities']['media']) && isset($tweet['media']['urls'][0])) {
+            $m->setCustom([
+                'url' => $tweet['entities']['media'][0]['url']
+            ]);
+        }
+
         if ($this->topicName) {
             $this->topics->broadcast($m, $this->topicName);
         }

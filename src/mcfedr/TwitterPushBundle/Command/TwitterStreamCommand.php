@@ -97,7 +97,7 @@ class TwitterStreamCommand extends Command
             }
             $data = json_decode($line, true);
             if (isset($data['text'])) {
-                $this->logger->info('Received Tweet', ['tweet' => $data]);
+                $this->logger->info('Received tweet', ['tweet' => $data]);
                 //Filter replies and retweets
                 if ($data['user']['id_str'] == $this->userid) {
                     try {
@@ -118,7 +118,7 @@ class TwitterStreamCommand extends Command
                         );
                     }
                 } else {
-                    $this->logger->info('Ignored Tweet', ['TweetId' => $data['id_str']]);
+                    $this->logger->info('Ignored tweet', ['TweetId' => $data['id_str']]);
                 }
             } else {
                 $this->logger->debug(
