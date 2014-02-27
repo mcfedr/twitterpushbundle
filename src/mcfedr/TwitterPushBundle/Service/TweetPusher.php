@@ -43,15 +43,23 @@ class TweetPusher
     public function pushTweet($tweet)
     {
         $m = new Message($tweet['text']);
-        if (isset($tweet['entities']) && isset($tweet['entities']['urls']) && isset($tweet['entities']['urls'][0])) {
-            $m->setCustom([
-                'url' => $tweet['entities']['urls'][0]['url']
-            ]);
-        } else if (isset($tweet['entities']) && isset($tweet['entities']['media']) && isset($tweet['media']['urls'][0])) {
-            $m->setCustom([
-                'url' => $tweet['entities']['media'][0]['url']
-            ]);
+        $custom = [
+            'i' => $tweet['id_str']
+        ];
+        //Check for links in the tweet
+        foreach (['urls', 'media'] as $entity) {
+            if (isset($tweet['entities']) && isset($tweet['entities'][$entity]) && isset($tweet['entities'][$entity][0])) {
+                $custom['u'] = $tweet['entities'][$entity][0]['url'];
+                //Remove the link from the text to save space
+                $newText = trim(substr($tweet['text'], 0, $tweet['entities'][$entity][0]['indices'][0]) . substr($tweet['text'], $tweet['entities'][$entity][0]['indices'][1]));
+                if($newText != '') {
+                    $m->setText($newText);
+                }
+                break;
+            }
         }
+
+        $m->setCustom($custom);
 
         if ($this->topicName) {
             $this->topics->broadcast($m, $this->topicName);
