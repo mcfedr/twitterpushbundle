@@ -9,7 +9,7 @@ A bundle for sending tweets as push notifications
 
 ### Composer
 
-    "mcfedr/twitterpushbundle": "~1.0.1"
+    php composer.phar require mcfedr/twitterpushbundle
 
 ### AppKernel
 
@@ -22,16 +22,6 @@ You need to also load the AWSPushBundle
             ...
             new mcfedr\AWSPushBundle\mcfedrAWSPushBundle(),
             new mcfedr\TwitterPushBundle\mcfedrTwitterPushBundle(),
-
-### Routing
-
-Setup the controllers in your routing.yml
-
-    mcfedr_twitter_push:
-        resource: "@mcfedrTwitterPushBundle/Controller/"
-        type:     annotation
-        prefix:   /
-
 
 ## Config
 
@@ -53,14 +43,6 @@ You will also need to configure the AWSPushBundle, see the
 
 ## Daemon
 
-Run the daemon `./app/console mcfedr:twitter:stream`
+Run the daemon `./app/console mcfedr:twitter:stream --env=prod --no-debug`
 
 There is a sample upstart config in the Resources/samples folder.
-
-## Usage
-
-Your devices should send their notification tokens to the controller
-
-    POST /devices
-    {"deviceID": "device token here", "platform": "ios"}
-
