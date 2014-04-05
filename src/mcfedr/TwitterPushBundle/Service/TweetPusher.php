@@ -51,7 +51,7 @@ class TweetPusher
             if (isset($tweet['entities']) && isset($tweet['entities'][$entity]) && isset($tweet['entities'][$entity][0])) {
                 $custom['u'] = $tweet['entities'][$entity][0]['url'];
                 //Remove the link from the text to save space
-                $newText = trim(substr($tweet['text'], 0, $tweet['entities'][$entity][0]['indices'][0]) . substr($tweet['text'], $tweet['entities'][$entity][0]['indices'][1]));
+                $newText = trim(mb_substr($tweet['text'], 0, $tweet['entities'][$entity][0]['indices'][0]) . mb_substr($tweet['text'], $tweet['entities'][$entity][0]['indices'][1]));
                 if($newText != '') {
                     $m->setText($newText);
                 }
