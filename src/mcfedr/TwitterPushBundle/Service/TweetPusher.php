@@ -11,24 +11,24 @@ class TweetPusher
     /**
      * @var Messages
      */
-    private $messages;
+    protected $messages;
 
     /**
      * @var Topics
      */
-    private $topics;
+    protected $topics;
 
     /**
      * @var string
      */
-    private $topicName;
+    protected $topicName;
 
     /**
      * @param Messages $messages
      * @param Topics $topics
      * @param string $topicName
      */
-    public function __construct(Messages $messages, Topics $topics, $topicName)
+    public function __construct(Messages $messages = null, Topics $topics = null, $topicName = null)
     {
         $this->messages = $messages;
         $this->topics = $topics;
@@ -42,6 +42,18 @@ class TweetPusher
      */
     public function pushTweet($tweet)
     {
+        $m = $this->getMessageForTweet($tweet);
+
+        if ($this->topicName) {
+            $this->topics->broadcast($m, $this->topicName);
+        }
+        else {
+            $this->messages->broadcast($m);
+        }
+    }
+
+    protected function getMessageForTweet($tweet)
+    {
         $m = new Message($tweet['text']);
         $custom = [
             'i' => $tweet['id_str']
@@ -49,9 +61,10 @@ class TweetPusher
         //Check for links in the tweet
         foreach (['urls', 'media'] as $entity) {
             if (isset($tweet['entities']) && isset($tweet['entities'][$entity]) && isset($tweet['entities'][$entity][0])) {
-                $custom['u'] = $tweet['entities'][$entity][0]['url'];
+                $entity = $tweet['entities'][$entity][0];
+                $custom['u'] = $entity['url'];
                 //Remove the link from the text to save space
-                $newText = trim(mb_substr($tweet['text'], 0, $tweet['entities'][$entity][0]['indices'][0]) . mb_substr($tweet['text'], $tweet['entities'][$entity][0]['indices'][1]));
+                $newText = trim(mb_substr($tweet['text'], 0, $entity['indices'][0], 'utf8') . mb_substr($tweet['text'], $entity['indices'][1], 'utf8'));
                 if($newText != '') {
                     $m->setText($newText);
                 }
@@ -61,11 +74,6 @@ class TweetPusher
 
         $m->setCustom($custom);
 
-        if ($this->topicName) {
-            $this->topics->broadcast($m, $this->topicName);
-        }
-        else {
-            $this->messages->broadcast($m);
-        }
+        return $m;
     }
 }
