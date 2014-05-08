@@ -60,8 +60,7 @@ class TweetPusher
 
         if ($this->topicName) {
             $this->topics->broadcast($m, $this->topicName);
-        }
-        else {
+        } else {
             $this->messages->broadcast($m);
         }
     }
@@ -78,8 +77,8 @@ class TweetPusher
                 $entity = $tweet['entities'][$entity][0];
                 $custom['u'] = $entity['url'];
                 //Remove the link from the text to save space
-                $newText = trim(mb_substr($tweet['text'], 0, $entity['indices'][0], 'utf8') . ($this->linkPlaceholder ?: '') . mb_substr($tweet['text'], $entity['indices'][1], 'utf8'));
-                if($newText != '') {
+                $newText = trim(mb_substr($tweet['text'], 0, $entity['indices'][0], 'utf8') . ($this->linkPlaceholder ? : '') . mb_substr($tweet['text'], $entity['indices'][1], 'utf8'));
+                if ($newText != '') {
                     $m->setText($newText);
                 }
                 break;
