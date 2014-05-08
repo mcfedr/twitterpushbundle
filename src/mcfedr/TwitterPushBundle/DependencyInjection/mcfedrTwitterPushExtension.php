@@ -30,5 +30,7 @@ class mcfedrTwitterPushExtension extends Extension
         $container->setParameter('mcfedr_twitter_push.twitter.token', $config['twitter']['token']);
         $container->setParameter('mcfedr_twitter_push.twitter.token_secret', $config['twitter']['token_secret']);
         $container->setParameter('mcfedr_twitter_push.userid', $config['userid']);
+        $container->setParameter('mcfedr_twitter_push.gcm_ttl', $config['gcm_ttl']);
+        $container->setParameter('mcfedr_twitter_push.link_placeholder', $config['link_placeholder']);
     }
 }

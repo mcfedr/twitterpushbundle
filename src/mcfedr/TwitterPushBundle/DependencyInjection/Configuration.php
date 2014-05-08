@@ -18,19 +18,21 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('mcfedr_twitter_push')->
-            children()->
-                arrayNode("twitter")->
-                    children()->
-                        scalarNode("consumer_key")->isRequired()->cannotBeEmpty()->end()->
-                        scalarNode("consumer_secret")->isRequired()->cannotBeEmpty()->end()->
-                        scalarNode("token")->end()->
-                        scalarNode("token_secret")->end()->
-                    end()->
-                end()->
-                scalarNode("userid")->isRequired()->cannotBeEmpty()->end()->
-            end()->
-        end();
+        $rootNode = $treeBuilder->root('mcfedr_twitter_push')
+            ->children()
+                ->arrayNode("twitter")
+                    ->children()
+                        ->scalarNode("consumer_key")->isRequired()->cannotBeEmpty()->end()
+                        ->scalarNode("consumer_secret")->isRequired()->cannotBeEmpty()->end()
+                        ->scalarNode("token")->end()
+                        ->scalarNode("token_secret")->end()
+                    ->end()
+                ->end()
+                ->scalarNode("userid")->isRequired()->cannotBeEmpty()->end()
+                ->integerNode('gcm_ttl')->min(0)->defaultValue(86400)->end()
+                ->scalarNode('link_placeholder')->defaultValue('[link]')->end()
+            ->end()
+        ->end();
 
 
         // Here you should define the parameters that are allowed to
