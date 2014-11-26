@@ -28,7 +28,7 @@ services:
             token_secret: "%mcfedr_twitter_push.twitter.token_secret%"
 
     mcfedr_twitter_push.command.stream:
-        class: mcfedr\TwitterPushBundle\Command\TwitterStreamCommand
+        class: Mcfedr\TwitterPushBundle\Command\TwitterStreamCommand
         arguments:
           - "@mcfedr_twitter_push.twitter_stream_client"
           - "@mcfedr_twitter_push.pusher"
@@ -38,11 +38,10 @@ services:
             -  { name: console.command }
 
     mcfedr_twitter_push.pusher:
-        class: mcfedr\TwitterPushBundle\Service\TweetPusher
+        class: Mcfedr\TwitterPushBundle\Service\TweetPusher
         arguments:
           - "@mcfedr_aws_push.messages"
-          - "@mcfedr_aws_push.topics"
-          - "%mcfedr_aws_push.topic_name%"
+          - "%mcfedr_aws_push.topic_arn%"
           - "%mcfedr_twitter_push.gcm_ttl%"
           - "%mcfedr_twitter_push.link_placeholder%"
 

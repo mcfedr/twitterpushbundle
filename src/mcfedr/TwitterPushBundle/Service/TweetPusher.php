@@ -1,9 +1,8 @@
 <?php
-namespace mcfedr\TwitterPushBundle\Service;
+namespace Mcfedr\TwitterPushBundle\Service;
 
-use mcfedr\AWSPushBundle\Message\Message;
-use mcfedr\AWSPushBundle\Service\Messages;
-use mcfedr\AWSPushBundle\Service\Topics;
+use Mcfedr\AwsPushBundle\Message\Message;
+use Mcfedr\AwsPushBundle\Service\Messages;
 
 class TweetPusher
 {
@@ -14,14 +13,9 @@ class TweetPusher
     protected $messages;
 
     /**
-     * @var Topics
-     */
-    protected $topics;
-
-    /**
      * @var string
      */
-    protected $topicName;
+    protected $topicArn;
 
     /**
      * @var int
@@ -35,16 +29,14 @@ class TweetPusher
 
     /**
      * @param Messages $messages
-     * @param Topics $topics
-     * @param string $topicName
+     * @param string $topicArn
      * @param int $gcmTtl
      * @param string $linkPlaceholder
      */
-    public function __construct(Messages $messages = null, Topics $topics = null, $topicName = null, $gcmTtl = null, $linkPlaceholder = null)
+    public function __construct(Messages $messages = null, $topicArn = null, $gcmTtl = null, $linkPlaceholder = null)
     {
         $this->messages = $messages;
-        $this->topics = $topics;
-        $this->topicName = $topicName;
+        $this->topicArn = $topicArn;
         $this->gcmTtl = $gcmTtl;
         $this->linkPlaceholder = $linkPlaceholder;
     }
@@ -58,8 +50,8 @@ class TweetPusher
     {
         $m = $this->getMessageForTweet($tweet);
 
-        if ($this->topicName) {
-            $this->topics->broadcast($m, $this->topicName);
+        if ($this->topicArn) {
+            $this->messages->send($m, $this->topicArn);
         } else {
             $this->messages->broadcast($m);
         }

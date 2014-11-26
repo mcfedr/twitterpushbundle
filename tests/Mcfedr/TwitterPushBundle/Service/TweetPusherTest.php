@@ -1,6 +1,35 @@
 <?php
-require '/Users/mcfedr/dev/hrom-push/vendor/autoload.php';
-$tweet = json_decode(<<<TWEET
+/**
+ * Created by mcfedr on 26/11/14 08:40
+ */
+
+namespace Mcfedr\TwitterPushBundle\Service;
+
+use mcfedr\AWSPushBundle\Message\Message;
+
+class TweetPusherTest extends \PHPUnit_Framework_TestCase
+{
+    public function testFetMessageForTweet()
+    {
+        $tweet = $this->getTweet();
+        $service = new TweetPusher(null, null, 'topic');
+        /** @var Message $m */
+        $m = $this->callMethod($service, 'getMessageForTweet', [
+            $tweet
+        ]);
+        $this->assertInstanceOf('\mcfedr\AWSPushBundle\Message\Message', $m);
+        $this->assertEquals($tweet['text'], $m->getText());
+    }
+
+    private  function callMethod($obj, $name, array $args) {
+        $class = new \ReflectionClass($obj);
+        $method = $class->getMethod($name);
+        $method->setAccessible(true);
+        return $method->invokeArgs($obj, $args);
+    }
+
+    private function getTweet() {
+        return json_decode(<<<TWEET
 {
             "created_at": "Sat Apr 12 08:11:31 +0000 2014",
             "id": 454894570166550500,
@@ -82,8 +111,6 @@ $tweet = json_decode(<<<TWEET
             "lang": "ru"
         }
 TWEET
-, true);
-
-$service = new \mcfedr\TwitterPushBundle\Service\TweetPusher(null, null, 'topic');
-$m = $service->getMessageForTweet($tweet);
-echo $m->getText();
+            , true);
+    }
+}

@@ -1,5 +1,5 @@
 <?php
-namespace mcfedr\TwitterPushBundle\Command;
+namespace Mcfedr\TwitterPushBundle\Command;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Guzzle\Http\Client;
 use Guzzle\Stream\PhpStreamRequestFactory;
-use mcfedr\TwitterPushBundle\Service\TweetPusher;
+use Mcfedr\TwitterPushBundle\Service\TweetPusher;
 
 class TwitterStreamCommand extends Command
 {

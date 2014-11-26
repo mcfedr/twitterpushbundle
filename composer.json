@@ -5,7 +5,7 @@
     "keywords": ["push", "notification", "bundle", "gcm", "c2dm", "ios", "apns", "twitter"],
     "require": {
         "php": ">=5.4.0",
-        "mcfedr/awspushbundle": ">=2.4,<4.0",
+        "mcfedr/awspushbundle": "~4.0",
         "symfony/symfony": "~2.3",
         "guzzle/guzzle": "~3.7"
     },
@@ -18,6 +18,12 @@
     ],
     "minimum-stability": "stable",
     "autoload": {
-        "psr-0": { "mcfedr\\TwitterPushBundle": "src/" }
+        "psr-0": { "Mcfedr\\TwitterPushBundle": "src/" }
+    },
+    "autoload-dev": {
+        "psr-0": { "Mcfedr\\TwitterPushBundle": "test/" }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.3"
     }
 }

@@ -1,9 +1,9 @@
 <?php
 
-namespace mcfedr\TwitterPushBundle;
+namespace Mcfedr\TwitterPushBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class mcfedrTwitterPushBundle extends Bundle
+class McfedrTwitterPushBundle extends Bundle
 {
 }
