@@ -39,11 +39,11 @@ This is sample configuration, to add to your config.yml
 You can find userid at [idfromuser.com](http://idfromuser.com). You can also use a comma separated list if you want to
 follow multiple users
 
-You will also need to configure the AWSPushBundle, see the
-[readme](https://github.com/mcfedr/awspushbundle/blob/master/README.md) for details
+You will also need to configure the AwsPushBundle, see the
+[README](https://github.com/mcfedr/awspushbundle/blob/master/README.md) for details
 
 ## Daemon
 
 Run the daemon `./app/console mcfedr:twitter:stream --env=prod --no-debug`
 
-There is a sample upstart config in the Resources/samples folder.
+There is a sample supervisord config in the supervisord folder.
