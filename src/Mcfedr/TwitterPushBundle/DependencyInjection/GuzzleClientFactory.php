@@ -9,7 +9,8 @@ use GuzzleHttp\Client;
 
 class GuzzleClientFactory
 {
-    public static function get(array $options, array $subscribers) {
+    public static function get(array $options, array $subscribers)
+    {
         $client = new Client($options);
         foreach ($subscribers as $subscriber) {
             $client->getEmitter()->attach($subscriber);
