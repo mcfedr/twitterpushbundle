@@ -4,6 +4,7 @@ A bundle for sending tweets as push notifications
 
 [![Latest Stable Version](https://poser.pugx.org/mcfedr/twitterpushbundle/v/stable.png)](https://packagist.org/packages/mcfedr/twitterpushbundle)
 [![License](https://poser.pugx.org/mcfedr/twitterpushbundle/license.png)](https://packagist.org/packages/mcfedr/twitterpushbundle)
+[![Build Status](https://travis-ci.org/mcfedr/twitterpushbundle.svg?branch=master)](https://travis-ci.org/mcfedr/twitterpushbundle)
 
 ## Install
 
