@@ -86,7 +86,7 @@ class TweetPusher
                 throw new MaxPushesPerHourException("Cannot send push, $count have already been sent. The limit is {$this->maxPushesPerHour}");
             }
             $tweetTimes[] = new \DateTime();
-            $this->cache->save(static::CACHE_KEY, $tweetTimes);
+            $this->cache->save(static::CACHE_KEY, $tweetTimes, 3600);
         }
 
         $m = $this->getMessageForTweet($tweet);
