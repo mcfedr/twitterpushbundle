@@ -7,7 +7,9 @@
         "php": ">=5.4.0",
         "mcfedr/awspushbundle": "~4.0",
         "symfony/symfony": "~2.3",
-        "guzzle/guzzle": "~3.7"
+        "guzzlehttp/guzzle": "~5.0",
+        "guzzlehttp/oauth-subscriber": "~0.2",
+        "guzzlehttp/log-subscriber": "~1.0"
     },
     "license": "MIT",
     "authors": [
@@ -18,12 +20,33 @@
     ],
     "minimum-stability": "stable",
     "autoload": {
-        "psr-0": { "Mcfedr\\TwitterPushBundle": "src/" }
+        "psr-4": { "Mcfedr\\TwitterPushBundle\\": "src/Mcfedr/TwitterPushBundle" }
     },
     "autoload-dev": {
-        "psr-0": { "Mcfedr\\TwitterPushBundle": "test/" }
+        "psr-4": { "Mcfedr\\TwitterPushBundle\\": "test/Mcfedr/TwitterPushBundle" }
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.3"
+        "phpunit/phpunit": "~4.3",
+        "theseer/phpdox": "~0.7",
+        "phploc/phploc": "~2.0",
+        "pdepend/pdepend": "~2.0",
+        "phpmd/phpmd": "~2.1",
+        "squizlabs/php_codesniffer": "~1.5",
+        "sebastian/phpcpd": "~2.0",
+        "symfony/monolog-bundle": "~2.6",
+        "incenteev/composer-parameter-handler": "~2.1"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters"
+        ],
+        "post-update-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters"
+        ]
+    },
+    "extra": {
+        "incenteev-parameters": {
+            "file": "tests/parameters.yml"
+        }
     }
 }

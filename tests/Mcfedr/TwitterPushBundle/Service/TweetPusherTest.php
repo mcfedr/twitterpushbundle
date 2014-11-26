@@ -18,7 +18,8 @@ class TweetPusherTest extends \PHPUnit_Framework_TestCase
             $tweet
         ]);
         $this->assertInstanceOf('\mcfedr\AWSPushBundle\Message\Message', $m);
-        $this->assertEquals($tweet['text'], $m->getText());
+        $this->assertEquals("Лев Рубинштейн: Пока люди разговаривают, они не воюют", $m->getText());
+        $this->assertEquals("http://t.co/5pmwVqKXNy", $m->getCustom()['u']);
     }
 
     private  function callMethod($obj, $name, array $args) {

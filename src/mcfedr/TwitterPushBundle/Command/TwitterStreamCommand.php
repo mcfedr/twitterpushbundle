@@ -1,17 +1,18 @@
 <?php
 namespace Mcfedr\TwitterPushBundle\Command;
 
+use GuzzleHttp\Message\Response;
+use GuzzleHttp\Stream\StreamInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Guzzle\Http\Client;
-use Guzzle\Stream\PhpStreamRequestFactory;
+use GuzzleHttp\Client;
 use Mcfedr\TwitterPushBundle\Service\TweetPusher;
 
 class TwitterStreamCommand extends Command
 {
-
+    const BLOCK_SIZE = 1;
     /**
      * @var Client
      */
@@ -59,74 +60,62 @@ class TwitterStreamCommand extends Command
     {
         $this->logger->info("Opening twitter stream to follow user {$this->userid}");
 
-        $request = $this->client->post(
-            'statuses/filter.json',
-            null,
-            [
+        /** @var Response $response */
+        $response = $this->client->post('statuses/filter.json', [
+            'body' => [
                 'follow' => $this->userid
-            ]
-        );
+            ],
+            'stream' => true
+        ]);
 
-        $factory = new PhpStreamRequestFactory();
-        $stream = $factory->fromRequest($request);
+        /** @var StreamInterface $stream */
+        $stream = $response->getBody();
 
         // Read until the stream is closed
-        while (!$stream->feof()) {
-            $this->logger->debug('Loop start');
-
-            // Read a line from the stream
-            // Normal read line seems to leave me waiting quite a bit
-            //$line = $stream->readLine();
-
-            // Whereas this seems to work just fine
-            $line = '';
-            $fp = $stream->getStream();
-            while (false !== ($char = fgetc($fp))) {
-//                $this->logger->debug('Got a char', ['char' => $char]);
-                $line .= $char;
-                if ($char == "\n") {
-                    break;
+        $this->logger->info('Reading stream');
+        $line = '';
+        while (!$stream->eof()) {
+            $line .= $stream->read(static::BLOCK_SIZE);
+            while (strstr($line, "\r\n") !== false) {
+                list($json, $line) = explode("\r\n", $line, 2);
+                $this->logger->debug('Got a line', ['line' => $json]);
+                if (trim($json) == '') {
+                    $this->logger->debug('Keep alive');
+                    continue;
                 }
-            }
-
-            $this->logger->debug('Got a line', ['line' => $line]);
-
-            if (trim($line) == '') {
-                $this->logger->debug('Keep alive');
-                continue;
-            }
-            $data = json_decode($line, true);
-            if (isset($data['text'])) {
-                $this->logger->info('Received tweet', ['tweet' => $data]);
-                //Filter replies and retweets
-                if ($data['user']['id_str'] == $this->userid) {
-                    try {
-                        $this->pusher->pushTweet($data);
-                        $this->logger->notice(
-                            'Sent tweet',
-                            [
-                                'TweetId' => $data['id_str']
-                            ]
-                        );
-                    } catch (\Exception $e) {
-                        $this->logger->error(
-                            "Failed to push",
-                            [
-                                'TweetId' => $data['id_str'],
-                                'Exception' => $e
-                            ]
-                        );
+                $data = json_decode($json, true);
+                if (isset($data['text'])) {
+                    $this->logger->info('Received tweet', ['tweet' => $data]);
+                    //Filter replies and retweets
+                    if ($data['user']['id_str'] == $this->userid) {
+                        try {
+                            $this->pusher->pushTweet($data);
+                            $this->logger->notice(
+                                'Sent tweet',
+                                [
+                                    'TweetId' => $data['id_str']
+                                ]
+                            );
+                        } catch (\Exception $e) {
+                            $this->logger->error(
+                                "Failed to push",
+                                [
+                                    'TweetId' => $data['id_str'],
+                                    'Exception' => $e
+                                ]
+                            );
+                        }
+                    } else {
+                        $this->logger->info('Ignored tweet', ['TweetId' => $data['id_str']]);
                     }
                 } else {
-                    $this->logger->info('Ignored tweet', ['TweetId' => $data['id_str']]);
+                    $this->logger->debug(
+                        'Other message',
+                        [
+                            'message' => $data
+                        ]
+                    );
                 }
-            } else {
-                $this->logger->debug(
-                    'Other message',
-                    [
-                        'message' => $data
-                    ]
-                );
             }
         }
 

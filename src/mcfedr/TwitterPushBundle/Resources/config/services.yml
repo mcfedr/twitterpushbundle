@@ -9,48 +9,49 @@ parameters:
 
 services:
     mcfedr_twitter_push.twitter_stream_client:
-        class: Guzzle\Http\Client
+        class: GuzzleHttp\Client
+        factory_class: Mcfedr\TwitterPushBundle\DependencyInjection\GuzzleClientFactory
+        factory_method: get
         arguments:
-          - "https://stream.twitter.com/{version}"
-          -
-            version: "1.1"
-        calls:
-          - [addSubscriber, ["@mcfedr_twitter_push.twitter_oauth"]]
-          - [addSubscriber, ["@mcfedr_twitter_push.twitter_stream_log_plugin"]]
+            -
+                base_url:
+                    - "https://stream.twitter.com/{version}/"
+                    -
+                        version: "1.1"
+                defaults:
+                    auth: oauth
+            -
+                - "@mcfedr_twitter_push.twitter_oauth"
+                - "@mcfedr_twitter_push.twitter_stream_log_subscriber"
 
     mcfedr_twitter_push.twitter_oauth:
-        class: Guzzle\Plugin\Oauth\OauthPlugin
+        class: GuzzleHttp\Subscriber\Oauth\Oauth1
         arguments:
-          -
-            consumer_key: "%mcfedr_twitter_push.twitter.consumer_key%"
-            consumer_secret: "%mcfedr_twitter_push.twitter.consumer_secret%"
-            token: "%mcfedr_twitter_push.twitter.token%"
-            token_secret: "%mcfedr_twitter_push.twitter.token_secret%"
+            -
+                consumer_key: "%mcfedr_twitter_push.twitter.consumer_key%"
+                consumer_secret: "%mcfedr_twitter_push.twitter.consumer_secret%"
+                token: "%mcfedr_twitter_push.twitter.token%"
+                token_secret: "%mcfedr_twitter_push.twitter.token_secret%"
 
     mcfedr_twitter_push.command.stream:
         class: Mcfedr\TwitterPushBundle\Command\TwitterStreamCommand
         arguments:
-          - "@mcfedr_twitter_push.twitter_stream_client"
-          - "@mcfedr_twitter_push.pusher"
-          - "%mcfedr_twitter_push.userid%"
-          - "@logger"
+            - "@mcfedr_twitter_push.twitter_stream_client"
+            - "@mcfedr_twitter_push.pusher"
+            - "%mcfedr_twitter_push.userid%"
+            - "@logger"
         tags:
             -  { name: console.command }
 
     mcfedr_twitter_push.pusher:
         class: Mcfedr\TwitterPushBundle\Service\TweetPusher
         arguments:
-          - "@mcfedr_aws_push.messages"
-          - "%mcfedr_aws_push.topic_arn%"
-          - "%mcfedr_twitter_push.gcm_ttl%"
-          - "%mcfedr_twitter_push.link_placeholder%"
+            - "@mcfedr_aws_push.messages"
+            - "%mcfedr_aws_push.topic_arn%"
+            - "%mcfedr_twitter_push.gcm_ttl%"
+            - "%mcfedr_twitter_push.link_placeholder%"
 
-    mcfedr_twitter_push.twitter_stream_log_adapter:
-        class: Guzzle\Log\PsrLogAdapter
-        arguments: ["@logger"]
-
-    mcfedr_twitter_push.twitter_stream_log_plugin:
-        class: Guzzle\Plugin\Log\LogPlugin
+    mcfedr_twitter_push.twitter_stream_log_subscriber:
+        class: GuzzleHttp\Subscriber\Log\LogSubscriber
         arguments:
-            - "@mcfedr_twitter_push.twitter_stream_log_adapter"
-            - "mcfedr_twitter_push Guzzle Request\n{request}\nResponse\n{response}\n\n{curl_stderr}"
+            - @logger

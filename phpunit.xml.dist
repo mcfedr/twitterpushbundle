@@ -15,6 +15,10 @@
         <log type="junit" target="build/logs/junit.xml" logIncompleteSkipped="false"/>
     </logging>
 
+    <php>
+        <server name="KERNEL_DIR" value="tests/" />
+    </php>
+
     <filter>
         <whitelist>
             <directory suffix=".php">src/Mcfedr/TwitterPushBundle/</directory>

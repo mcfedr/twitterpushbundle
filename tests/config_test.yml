@@ -1,0 +1,50 @@
+imports:
+    - { resource: parameters.yml }
+
+framework:
+    test: ~
+    session:
+        storage_id: session.storage.mock_file
+    router:
+        resource: "%kernel.root_dir%/routing.yml"
+        strict_requirements: ~
+    validation:      { enable_annotations: true }
+    secret: 'fake_secret'
+    form: ~
+
+mcfedr_twitter_push:
+    twitter:
+        consumer_key: "%mcfedr_twitter_consumer_key%"
+        consumer_secret: "%mcfedr_twitter_consumer_secret%"
+        token: "%mcfedr_twitter_token%"
+        token_secret: "%mcfedr_twitter_token_secret%"
+    userid: "%mcfedr_userid%"
+
+mcfedr_aws_push:
+    platforms:
+        test: 'platform'
+    aws:
+        key: 'key'
+        secret: 'secret'
+        region: 'region'
+    topic_arn: 'topic'
+    debug: true
+
+security:
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext
+    providers:
+        in_memory:
+            memory:
+                users:
+                    admin: { password: password, roles: 'ROLE_MCFEDR_AWS_BROADCAST' }
+    firewalls:
+        default:
+            pattern: ^/
+            anonymous: ~
+            http_basic: ~
+
+monolog:
+    handlers:
+        main:
+            type: console
