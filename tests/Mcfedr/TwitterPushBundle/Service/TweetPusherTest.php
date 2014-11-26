@@ -5,14 +5,61 @@
 
 namespace Mcfedr\TwitterPushBundle\Service;
 
+use Doctrine\Common\Cache\ArrayCache;
 use mcfedr\AWSPushBundle\Message\Message;
 
 class TweetPusherTest extends \PHPUnit_Framework_TestCase
 {
-    public function testFetMessageForTweet()
+    public function testPushTweet()
+    {
+        $messagesMock = $this->getMock('Mcfedr\AwsPushBundle\Service\Messages', ['broadcast'], [] , '', false);
+        $messagesMock->expects($this->once())
+            ->method('broadcast')
+            ->with(
+                $this->isInstanceOf('Mcfedr\AwsPushBundle\Message\Message')
+            );
+        $service = new TweetPusher($messagesMock);
+        $service->pushTweet($this->getTweet());
+    }
+
+    public function testPushTweetTopic()
+    {
+        $arn = 'topic';
+        $messagesMock = $this->getMock('Mcfedr\AwsPushBundle\Service\Messages', ['send'], [] , '', false);
+        $messagesMock->expects($this->once())
+            ->method('send')
+            ->with(
+                $this->isInstanceOf('Mcfedr\AwsPushBundle\Message\Message'),
+                $this->equalTo($arn)
+            );
+        $service = new TweetPusher($messagesMock, $arn);
+        $service->pushTweet($this->getTweet());
+    }
+
+    /**
+     * @expectedException \Mcfedr\TwitterPushBundle\Exception\MaxPushesPerHourException
+     */
+    public function testPushTweetRate()
+    {
+        $arn = 'topic';
+        $messagesMock = $this->getMock('Mcfedr\AwsPushBundle\Service\Messages', ['send'], [] , '', false);
+        $messagesMock->expects($this->exactly(5))
+            ->method('send')
+            ->with(
+                $this->isInstanceOf('Mcfedr\AwsPushBundle\Message\Message'),
+                $this->equalTo($arn)
+            );
+
+        $service = new TweetPusher($messagesMock, $arn, null, null, 5, new ArrayCache());
+        for ($i = 0; $i < 6; $i++) {
+            $service->pushTweet($this->getTweet());
+        }
+    }
+
+    public function testGetMessageForTweet()
     {
         $tweet = $this->getTweet();
-        $service = new TweetPusher(null, null, 'topic');
+        $service = new TweetPusher($this->getMock('Mcfedr\AwsPushBundle\Service\Messages', [], [], '', false));
         /** @var Message $m */
         $m = $this->callMethod($service, 'getMessageForTweet', [
             $tweet

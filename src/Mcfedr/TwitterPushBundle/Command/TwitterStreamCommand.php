@@ -16,22 +16,22 @@ class TwitterStreamCommand extends Command
     /**
      * @var Client
      */
-    protected $client;
+    private $client;
 
     /**
      * @var TweetPusher
      */
-    protected $pusher;
+    private $pusher;
 
     /**
      * @var string
      */
-    protected $userid;
+    private $userid;
 
     /**
      * @var LoggerInterface
      */
-    protected $logger;
+    private $logger;
 
     /**
      * @param Client $client

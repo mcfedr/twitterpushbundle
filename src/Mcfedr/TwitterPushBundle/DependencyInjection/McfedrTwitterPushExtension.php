@@ -4,6 +4,8 @@ namespace Mcfedr\TwitterPushBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
@@ -32,5 +34,29 @@ class McfedrTwitterPushExtension extends Extension
         $container->setParameter('mcfedr_twitter_push.userid', $config['userid']);
         $container->setParameter('mcfedr_twitter_push.gcm_ttl', $config['gcm_ttl']);
         $container->setParameter('mcfedr_twitter_push.link_placeholder', $config['link_placeholder']);
+        $container->setParameter('mcfedr_twitter_push.max_pushes_per_hour', $config['max_pushes_per_hour']);
+
+        if (isset($config['cache'])) {
+            $cacheName = $config['cache'];
+        } else {
+            $cacheName = 'mcfedr_twitter_push.cache';
+            $container->setDefinition(
+                $cacheName,
+                new Definition('Doctrine\Common\Cache\ArrayCache')
+            );
+        }
+
+        $container->setDefinition(
+            'mcfedr_twitter_push.pusher',
+            new Definition('Mcfedr\TwitterPushBundle\Service\TweetPusher', [
+                new Reference('mcfedr_aws_push.messages'),
+                $container->getParameter('mcfedr_aws_push.topic_arn'),
+                $container->getParameter('mcfedr_twitter_push.gcm_ttl'),
+                $container->getParameter('mcfedr_twitter_push.link_placeholder'),
+                $container->getParameter('mcfedr_twitter_push.max_pushes_per_hour'),
+                new Reference($cacheName),
+                isset($config['cache_timeout']) ? $config['cache_timeout'] : 3600
+            ])
+        );
     }
 }
