@@ -21,8 +21,8 @@ You need to also load the AWSPushBundle
     {
         $bundles = array(
             ...
-            new mcfedr\AWSPushBundle\mcfedrAWSPushBundle(),
-            new mcfedr\TwitterPushBundle\mcfedrTwitterPushBundle(),
+            new Mcfedr\AwsPushBundle\McfedrAWSPushBundle(),
+            new Mcfedr\TwitterPushBundle\McfedrTwitterPushBundle(),
 
 ## Config
 
