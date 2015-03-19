@@ -5,6 +5,7 @@ A bundle for sending tweets as push notifications
 [![Latest Stable Version](https://poser.pugx.org/mcfedr/twitterpushbundle/v/stable.png)](https://packagist.org/packages/mcfedr/twitterpushbundle)
 [![License](https://poser.pugx.org/mcfedr/twitterpushbundle/license.png)](https://packagist.org/packages/mcfedr/twitterpushbundle)
 [![Build Status](https://travis-ci.org/mcfedr/twitterpushbundle.svg?branch=master)](https://travis-ci.org/mcfedr/twitterpushbundle)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/f20e6ab9-aa4c-4b5c-9af1-f3691c5b1bf9/mini.png)](https://insight.sensiolabs.com/projects/f20e6ab9-aa4c-4b5c-9af1-f3691c5b1bf9)
 
 ## Install
 
