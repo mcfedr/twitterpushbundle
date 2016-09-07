@@ -6,17 +6,21 @@
 namespace Mcfedr\TwitterPushBundle\Service;
 
 use Doctrine\Common\Cache\ArrayCache;
-use mcfedr\AWSPushBundle\Message\Message;
+use Mcfedr\AwsPushBundle\Message\Message;
+use Mcfedr\AwsPushBundle\Service\Messages;
 
 class TweetPusherTest extends \PHPUnit_Framework_TestCase
 {
     public function testPushTweet()
     {
-        $messagesMock = $this->getMock('Mcfedr\AwsPushBundle\Service\Messages', ['broadcast'], [] , '', false);
+        $messagesMock = $this->getMockBuilder(Messages::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['broadcast'])
+            ->getMock();
         $messagesMock->expects($this->once())
             ->method('broadcast')
             ->with(
-                $this->isInstanceOf('Mcfedr\AwsPushBundle\Message\Message')
+                $this->isInstanceOf(Message::class)
             );
         $service = new TweetPusher($messagesMock);
         $service->pushTweet($this->getTweet());
@@ -25,11 +29,14 @@ class TweetPusherTest extends \PHPUnit_Framework_TestCase
     public function testPushTweetTopic()
     {
         $arn = 'topic';
-        $messagesMock = $this->getMock('Mcfedr\AwsPushBundle\Service\Messages', ['send'], [] , '', false);
+        $messagesMock = $this->getMockBuilder(Messages::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['send'])
+            ->getMock();
         $messagesMock->expects($this->once())
             ->method('send')
             ->with(
-                $this->isInstanceOf('Mcfedr\AwsPushBundle\Message\Message'),
+                $this->isInstanceOf(Message::class),
                 $this->equalTo($arn)
             );
         $service = new TweetPusher($messagesMock, $arn);
@@ -42,11 +49,14 @@ class TweetPusherTest extends \PHPUnit_Framework_TestCase
     public function testPushTweetRate()
     {
         $arn = 'topic';
-        $messagesMock = $this->getMock('Mcfedr\AwsPushBundle\Service\Messages', ['send'], [] , '', false);
+        $messagesMock = $this->getMockBuilder(Messages::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['send'])
+            ->getMock();
         $messagesMock->expects($this->exactly(5))
             ->method('send')
             ->with(
-                $this->isInstanceOf('Mcfedr\AwsPushBundle\Message\Message'),
+                $this->isInstanceOf(Message::class),
                 $this->equalTo($arn)
             );
 
@@ -59,12 +69,14 @@ class TweetPusherTest extends \PHPUnit_Framework_TestCase
     public function testGetMessageForTweet()
     {
         $tweet = $this->getTweet();
-        $service = new TweetPusher($this->getMock('Mcfedr\AwsPushBundle\Service\Messages', [], [], '', false));
+        $service = new TweetPusher($this->getMockBuilder(Messages::class)
+            ->disableOriginalConstructor()
+            ->getMock());
         /** @var Message $m */
         $m = $this->callMethod($service, 'getMessageForTweet', [
             $tweet
         ]);
-        $this->assertInstanceOf('\mcfedr\AWSPushBundle\Message\Message', $m);
+        $this->assertInstanceOf(Message::class, $m);
         $this->assertEquals("Лев Рубинштейн: Пока люди разговаривают, они не воюют", $m->getText());
         $this->assertEquals("http://t.co/5pmwVqKXNy", $m->getCustom()['u']);
     }

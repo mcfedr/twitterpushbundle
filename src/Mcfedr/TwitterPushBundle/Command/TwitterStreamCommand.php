@@ -1,8 +1,6 @@
 <?php
 namespace Mcfedr\TwitterPushBundle\Command;
 
-use GuzzleHttp\Message\Response;
-use GuzzleHttp\Stream\StreamInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -60,15 +58,13 @@ class TwitterStreamCommand extends Command
     {
         $this->logger->info("Opening twitter stream to follow user {$this->userid}");
 
-        /** @var Response $response */
         $response = $this->client->post('statuses/filter.json', [
-            'body' => [
+            'form_params' => [
                 'follow' => $this->userid
             ],
             'stream' => true
         ]);
 
-        /** @var StreamInterface $stream */
         $stream = $response->getBody();
 
         // Read until the stream is closed

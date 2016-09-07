@@ -21,19 +21,12 @@ services:
 
     mcfedr_twitter_push.twitter_stream_client:
         class: GuzzleHttp\Client
-        factory_class: Mcfedr\TwitterPushBundle\DependencyInjection\GuzzleClientFactory
-        factory_method: get
+        factory: [Mcfedr\TwitterPushBundle\DependencyInjection\GuzzleClientFactory, get]
         arguments:
             -
-                base_url:
-                    - "https://stream.twitter.com/{version}/"
-                    -
-                        version: "1.1"
-                defaults:
-                    auth: oauth
-            -
-                - "@mcfedr_twitter_push.twitter_oauth"
-                - "@mcfedr_twitter_push.twitter_stream_log_subscriber"
+                base_uri: "https://stream.twitter.com/1.1/"
+                auth: oauth
+            - "@mcfedr_twitter_push.twitter_oauth"
 
     mcfedr_twitter_push.twitter_oauth:
         class: GuzzleHttp\Subscriber\Oauth\Oauth1
@@ -43,8 +36,3 @@ services:
                 consumer_secret: "%mcfedr_twitter_push.twitter.consumer_secret%"
                 token: "%mcfedr_twitter_push.twitter.token%"
                 token_secret: "%mcfedr_twitter_push.twitter.token_secret%"
-
-    mcfedr_twitter_push.twitter_stream_log_subscriber:
-        class: GuzzleHttp\Subscriber\Log\LogSubscriber
-        arguments:
-            - @logger

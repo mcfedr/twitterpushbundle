@@ -8,7 +8,6 @@ class TestKernel extends Symfony\Component\HttpKernel\Kernel
         return [
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\SecurityBundle\SecurityBundle(),
-            new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Symfony\Bundle\MonologBundle\MonologBundle(),
             new Mcfedr\AwsPushBundle\McfedrAwsPushBundle(),
             new Mcfedr\TwitterPushBundle\McfedrTwitterPushBundle()

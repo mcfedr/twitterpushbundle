@@ -110,7 +110,7 @@ class TweetPusher
                 $entity = $tweet['entities'][$entity][0];
                 $custom['u'] = $entity['url'];
                 //Remove the link from the text to save space
-                $newText = trim(mb_substr($tweet['text'], 0, $entity['indices'][0], 'utf8') . ($this->linkPlaceholder ?: '') . mb_substr($tweet['text'], $entity['indices'][1], 'utf8'));
+                $newText = trim(mb_substr($tweet['text'], 0, $entity['indices'][0], 'utf8') . ($this->linkPlaceholder ?: '') . mb_substr($tweet['text'], $entity['indices'][1], null, 'utf8'));
                 if ($newText != '') {
                     $m->setText($newText);
                 }

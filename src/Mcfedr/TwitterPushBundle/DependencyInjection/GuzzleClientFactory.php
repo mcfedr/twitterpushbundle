@@ -6,15 +6,17 @@
 namespace Mcfedr\TwitterPushBundle\DependencyInjection;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Subscriber\Oauth\Oauth1;
 
 class GuzzleClientFactory
 {
-    public static function get(array $options, array $subscribers)
+    public static function get(array $options, Oauth1 $oauth1)
     {
-        $client = new Client($options);
-        foreach ($subscribers as $subscriber) {
-            $client->getEmitter()->attach($subscriber);
-        }
-        return $client;
+        $stack = HandlerStack::create();
+        $stack->unshift($oauth1);
+
+        $options['handler'] = $stack;
+        return new Client($options);
     }
 }
